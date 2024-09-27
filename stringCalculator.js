@@ -1,33 +1,34 @@
 function add(numbers) {
     let negativeNumbers = [];
     if (numbers === '') return 0;
-    const delimiter = findDelimiter(numbers);
-    const simplifiedNumbers = numbers.replace(/\/\/.*\n/, '').split(new RegExp(`[${delimiter}\n]`));
-    const sum = simplifiedNumbers.reduce((total, num) => {
-        const n = parseInt(num, 10);
-        if (n < 0) {
-            negativeNumbers.push(n);
-            return;
-        }
-        return total + n;
-    }, 0);
 
+    const filterNumbers = num => num <= 1000;
 
-    // If there are negative numbers, throw an exception
-    if (negativeNumbers.length > 0) {
-        throw new Error(`negative numbers not allowed: ${negativeNumbers.join(', ')}`);
+    if (numbers.startsWith("//")) {
+        const delimiters = findDelimiters(numbers);
+        numbers = numbers.split("\n")[1];
+        const regex = new RegExp(delimiters.join('|'), 'g');
+        const numArray = numbers.split(regex).map(Number).filter(filterNumbers);
+        
+        negativeNumbers = numArray.filter(num => num < 0);
+        if (negativeNumbers.length > 0) throw new Error("negative numbers not allowed: " + negativeNumbers.join(', '));
+        
+        return numArray.reduce((a, b) => a + b, 0);
     }
-    return sum;
+
+    const numArray = numbers.split(/[,|\n]/).map(Number).filter(filterNumbers);
+    negativeNumbers = numArray.filter(num => num < 0);
+    if (negativeNumbers.length > 0) throw new Error(`negative numbers not allowed: ${negativeNumbers.join(', ')}`);
+    
+    return numArray.reduce((a, b) => a + b, 0);
 }
 
-//Extracting delimiter from string of format "//[delimiter]\n[numbers…]".
-function findDelimiter(numbers) {
-    const defaultDelimiter = ',';
-    if (numbers.startsWith('//')) {
-        const customDelimiter = numbers.split('\n')[0].slice(2);
-        return customDelimiter;
-    }
-    return defaultDelimiter;
+function findDelimiters(numbers) {
+    const parts = numbers.split("\n");
+    const delimiterPart = parts[0].slice(2);
+    const delimiters = delimiterPart.split('][').map(d => d.replace(/[\[\]]/g, ''));
+    return delimiters.map(d => d.replace(/[-\/\\^$.*+?()[\]{}|]/g, '\\$&')); // Escape special regex characters
 }
+
 
 module.exports = { add };

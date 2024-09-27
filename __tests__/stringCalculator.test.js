@@ -24,6 +24,10 @@ describe('String Calculator', () => {
     expect(add('//;\n1;2')).toBe(3);
   });
 
+  test('supports custom delimiters of varying length', () => {
+    expect(add("//[***]\n1***2")).toBe(3);
+});
+
   test('throws an exception for negative numbers', () => {
     expect(() => add('1,-2,3')).toThrow('negative numbers not allowed: -2');
   });
@@ -34,5 +38,14 @@ describe('String Calculator', () => {
 
   test('throws an exception for negative numbers with custom delimiter', () => {
     expect(() => add('//;\n1;-2')).toThrow('negative numbers not allowed: -2');
+  });
+
+  test('supports multiple delimiters of varying lengths', () => {
+    expect(add("//[***][%]\n1***2%3")).toBe(6);
+    expect(add("//[**][%%]\n1**2%%3")).toBe(6);
+  });
+
+  test('handles multiple custom delimiters with varying lengths', () => {
+    expect(add("//[***][#][%]\n1***2#3%4")).toBe(10);
   });
 });
