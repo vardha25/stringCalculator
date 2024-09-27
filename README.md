@@ -1,6 +1,3 @@
-# stringCalculator
-String calculator using TDD kata
-
 ## Features
 
 - Handles empty strings.
@@ -29,8 +26,3 @@ To get started with the String Calculator project, follow these steps:
 2. **Install dependencies**
 
    npm install --save-dev jest
-
-2. **Run Test cases**
-
-   npm test
-
