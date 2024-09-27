@@ -1,3 +1,6 @@
 function add(numbers) {
-    return;
+    if (numbers === '') return 0;
+    return +numbers;
 }
+
+module.exports = { add };
